@@ -1,3 +1,5 @@
+# check=skip=SecretsUsedInArgOrEnv
+# (VITE_AUTH_URL é um URL público que acaba no bundle; não é um segredo)
 FROM node:24-alpine AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
