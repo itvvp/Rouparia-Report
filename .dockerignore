@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.git/
+.gitignore
+.agents/
+.vscode/
+.env
+.env.*
+*.xlsx
+~$*
+*.log
+Dockerfile
+.dockerignore
