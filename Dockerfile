@@ -14,7 +14,7 @@ RUN npm run build
 FROM nginx:1.27-alpine
 # - o nginx preenche o template ao arrancar (envsubst só de API_*, para não tocar nos $host/$uri do nginx)
 # - API_UPSTREAM: a API na rede interna do Docker (no Coolify, o Network Alias da app da API). Muda-se aqui ou como variável de runtime.
-ENV API_UPSTREAM=http://rouparia-api:8025 \
+ENV API_UPSTREAM=http://rouparia-api:8026 \
     NGINX_ENVSUBST_FILTER=^API_
 COPY nginx.conf.template /etc/nginx/templates/default.conf.template
 COPY nginx-security.conf /etc/nginx/snippets/security.conf
