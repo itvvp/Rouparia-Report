@@ -19,7 +19,7 @@ function Gate() {
       <div hidden={page !== 'app'}>
         <App user={user} onLogout={() => logout().then(() => setUser(null))} onUsers={user.role === 'superuser' ? () => setPage('users') : undefined} />
       </div>
-      {page === 'users' && user.role === 'superuser' && <Users onBack={() => setPage('app')} />}
+      {page === 'users' && user.role === 'superuser' && <Users user={user} onBack={() => setPage('app')} />}
     </>
   )
 }

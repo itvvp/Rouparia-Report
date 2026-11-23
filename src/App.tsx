@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import type { User } from './auth.ts'
+import { Icon, TopBar } from './ui.tsx'
 import { distinct, groupByModel, isDeliveryFile, mergeDelivery, parseDelivery, parseGarments, type Delivery, type Garment, type Row } from './parse.ts'
 
 // availability values not shown as columns (still counted in Total)
@@ -81,7 +82,10 @@ export default function App({ user, onLogout, onUsers }: { user: User; onLogout:
 
   return (
     <main>
-      <header className="top"><h1>Rouparia</h1><span>{user.name || user.email} {onUsers && <button className="ghost" onClick={onUsers}>Utilizadores</button>}<button className="ghost" onClick={onLogout}>Sair</button></span></header>
+      <TopBar user={user}>
+        {onUsers && <button className="ghost" onClick={onUsers}><Icon name="users" />Utilizadores</button>}
+        <button className="ghost" onClick={onLogout}><Icon name="logout" />Sair</button>
+      </TopBar>
       <label
         className={'drop' + (over ? ' over' : '') + (loaded ? ' small' : '')}
         onDragOver={e => { e.preventDefault(); setOver(true) }}
@@ -89,7 +93,8 @@ export default function App({ user, onLogout, onUsers }: { user: User; onLogout:
         onDrop={e => { e.preventDefault(); setOver(false); load(e.dataTransfer.files) }}
       >
         <input type="file" accept=".xlsx" multiple hidden onChange={e => { load(e.target.files); e.target.value = '' }} />
-        {busy ? 'A processar…' : loaded ? `${loaded} — larga mais ficheiros para adicionar ou substituir` : 'Arrasta aqui os ficheiros Excel (Garments e roupa por entregar) ou clica'}
+        <Icon name="upload" />
+        <span>{busy ? 'A processar…' : loaded ? <><b>{loaded}</b> — larga mais ficheiros para adicionar ou substituir</> : <><b>Arrasta aqui os ficheiros Excel</b> (Garments e roupa por entregar) ou clica para escolher</>}</span>
       </label>
       {err && <p className="err" role="alert">{err}</p>}
       {deliveries && !garments && <p className="err">Falta o ficheiro Garments para juntar a roupa por entregar.</p>}
@@ -102,9 +107,12 @@ export default function App({ user, onLogout, onUsers }: { user: User; onLogout:
             {view.unmatched > 0 && <span className="err"> · {view.unmatched} chips por entregar não existem no Garments</span>}
           </p>
           <div className="bar">
-            <input className="search" placeholder="Filtrar modelo (código ou descrição)" value={q} onChange={e => setQ(e.target.value)} />
-            <button onClick={exportXlsx} disabled={!view.models.length}>Exportar Excel</button>
+            <label className="search-wrap"><Icon name="search" />
+              <input className="search" type="search" placeholder="Filtrar modelo (código ou descrição)" aria-label="Filtrar modelo" value={q} onChange={e => setQ(e.target.value)} />
+            </label>
+            <button onClick={exportXlsx} disabled={!view.models.length}><Icon name="download" />Exportar Excel</button>
           </div>
+          <div className="tablewrap">
           <table>
             <thead>
               <tr>
@@ -117,7 +125,7 @@ export default function App({ user, onLogout, onUsers }: { user: User; onLogout:
             {view.models.map(m => (
               <tbody key={m.code}>
                 <tr className="model" onClick={() => setOpen(open === m.code ? null : m.code)}>
-                  <td>{open === m.code ? '▾' : '▸'} {m.code}</td><td>{m.description}</td><td className="n"><b>{m.items.length}</b></td>
+                  <td className="code"><span className={'chev' + (open === m.code ? ' open' : '')}><Icon name="chevron" /></span>{m.code}</td><td>{m.description}</td><td className="n"><b>{m.items.length}</b></td>
                   {deliveries && <td className="n pend">{m.items.filter(g => g.delivery).length || '–'}</td>}
                   {view.statuses.map(v => <td key={v} className="n">{count(m.items, 'status', v) || '–'}</td>)}
                   {view.avails.map(v => <td key={v} className="n alt">{count(m.items, 'availability', v) || '–'}</td>)}
@@ -138,6 +146,7 @@ export default function App({ user, onLogout, onUsers }: { user: User; onLogout:
               </tbody>
             ))}
           </table>
+          </div>
         </>
       )}
     </main>

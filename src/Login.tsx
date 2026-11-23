@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { login, type User } from './auth.ts'
+import { Logo } from './ui.tsx'
 
 export default function Login({ onLogin }: { onLogin: (u: User) => void }) {
   const [email, setEmail] = useState('')
@@ -14,9 +15,9 @@ export default function Login({ onLogin }: { onLogin: (u: User) => void }) {
   }
 
   return (
-    <main className="login">
-      <h1>Rouparia</h1>
-      <form onSubmit={submit}>
+    <main className="auth">
+      <div className="brand big"><Logo /><h1>Rouparia</h1></div>
+      <form className="panel form" onSubmit={submit}>
         <label>E-mail<input type="email" autoComplete="username" required autoFocus value={email} onChange={e => setEmail(e.target.value)} /></label>
         <label>Palavra-passe<input type="password" autoComplete="current-password" required value={password} onChange={e => setPassword(e.target.value)} /></label>
         {err && <p className="err" role="alert">{err}</p>}

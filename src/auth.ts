@@ -43,4 +43,15 @@ export async function createUser(input: NewUser): Promise<User> {
   throw new Error(why[r.status] ?? `Erro do servidor (${r.status}).`)
 }
 
+/** All users (superuser only; the API answers 403 to anyone else). */
+export async function listUsers(): Promise<User[]> {
+  let r: Response
+  try { r = await call('/auth/users', 'GET') }
+  catch { throw new Error('Não foi possível contactar o servidor.') }
+  if (r.status === 401) throw new Error('A sessão expirou. Volta a entrar.')
+  if (r.status === 403) throw new Error('Sem permissão para ver os utilizadores.')
+  if (!r.ok) throw new Error(`Erro do servidor (${r.status}).`)
+  return r.json()
+}
+
 export const logout =() => call('/auth/logout', 'POST').catch(() => {})
