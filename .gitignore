@@ -1,0 +1,21 @@
+# dependências e build
+node_modules/
+dist/
+*.tsbuildinfo
+
+# segredos (o .env.example fica)
+.env
+.env.*
+!.env.example
+
+# dados pessoais de funcionários (RGPD): nunca vão para o repositório
+*.xlsx
+*.xls
+~$*
+
+# lixo local
+*.log
+.DS_Store
+.vscode/
+.idea/
+.agents/

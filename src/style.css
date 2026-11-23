@@ -1,0 +1,36 @@
+:root { font-family: system-ui, sans-serif; color: #1c1f24; background: #f6f7f9; }
+body { margin: 0; }
+main { max-width: 1200px; margin: 0 auto; padding: 24px 16px 64px; }
+h1 { font-size: 1.4rem; margin: 0 0 16px; }
+.drop { display: block; border: 2px dashed #9aa3af; border-radius: 12px; padding: 64px 16px; text-align: center; cursor: pointer; background: #fff; color: #4b5563; }
+.drop.small { padding: 14px 16px; }
+.drop.over, .drop:hover { border-color: #2563eb; background: #eff6ff; }
+.err { color: #b91c1c; }
+.sum { margin: 16px 0 8px; }
+.search { flex: 1; max-width: 360px; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; }
+table { border-collapse: collapse; width: 100%; background: #fff; font-size: .85rem; }
+th, td { padding: 6px 10px; text-align: left; border-bottom: 1px solid #e5e7eb; }
+th { background: #eef0f3; position: sticky; top: 0; }
+.n { text-align: right; font-variant-numeric: tabular-nums; }
+.alt { background: #fafafa; }
+.model { cursor: pointer; }
+.model:hover { background: #f1f5f9; }
+.items { padding: 0 0 0 24px; background: #f8fafc; }
+.items table { font-size: .8rem; }
+.pend { background: #fff7ed; }
+.bar { display: flex; gap: 8px; margin-bottom: 12px; }
+button { padding: 8px 14px; border: 0; border-radius: 8px; background: #2563eb; color: #fff; cursor: pointer; }
+button:disabled { background: #9aa3af; cursor: default; }
+.top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.top h1 { margin: 0; }
+.top span { font-size: .85rem; color: #4b5563; }
+.ghost { background: none; color: #2563eb; padding: 4px 8px; }
+.center { text-align: center; margin-top: 20vh; color: #4b5563; }
+.login { max-width: 360px; margin-top: 12vh; }
+.login form { display: grid; gap: 12px; background: #fff; padding: 20px; border-radius: 12px; border: 1px solid #e5e7eb; }
+.login label { display: grid; gap: 4px; font-size: .85rem; }
+.login input { padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 8px; }
+.ok { color: #15803d; }
+.login select { padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 8px; background: #fff; }
+.login small { display: flex; align-items: center; gap: 4px; color: #4b5563; }
+.login small input { padding: 0; }
