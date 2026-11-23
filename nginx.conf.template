@@ -3,14 +3,10 @@ server {
     root /usr/share/nginx/html;
     server_tokens off;
 
-    # CSP: o connect-src deixa o browser falar com a API (${API_ORIGIN}). Sem isto o login é bloqueado quando a API tem outro domínio.
-    set $csp "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' ${API_ORIGIN}; frame-ancestors 'none'; base-uri 'self'; form-action 'self'";
-
     # assets com hash no nome: cache longa. O index.html nunca fica em cache, senão um deploy novo não chega aos utilizadores.
     location /assets/ {
         add_header Cache-Control "public, max-age=31536000, immutable";
         include /etc/nginx/snippets/security.conf;
-        add_header Content-Security-Policy $csp always;
     }
 
     # A API só existe na rede interna do Docker (sem porta publicada nem domínio): o browser fala só com esta origem,
@@ -36,7 +32,6 @@ server {
     location / {
         add_header Cache-Control "no-cache";
         include /etc/nginx/snippets/security.conf;
-        add_header Content-Security-Policy $csp always;
         try_files $uri /index.html;
     }
 }
