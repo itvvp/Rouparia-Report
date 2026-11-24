@@ -39,3 +39,10 @@ test('delivery rows are merged into garments by chip', () => {
   assert.equal(r.unmatched, 1)
   assert.throws(() => parseDelivery([['Chip Code']]))
 })
+
+import { total } from './parse.ts'
+test('total = Soiled + In Use + Loaded + New - ToRetire + por entregar', () => {
+  const g = (status: string, availability: string, delivery?: object) => ({ status, availability, delivery }) as never
+  // 5 counted statuses (the ToRetire one is Soiled), 1 other status ignored, 1 ToRetire (-1), 1 por entregar (+1)
+  assert.equal(total([g('Soiled', ''), g('In Use', ''), g('Loaded', ''), g('New', ''), g('Other', ''), g('Soiled', 'ToRetire'), g('Other', '', {})]), 5 - 1 + 1)
+})

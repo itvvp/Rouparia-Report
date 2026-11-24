@@ -40,6 +40,10 @@ export function groupByModel(gs: Garment[]): Model[] {
   return [...m.values()].sort((a, b) => a.description.localeCompare(b.description))
 }
 
+/** Total = Soiled + In Use + Loaded + New − ToRetire + por entregar */
+export const total = (gs: Garment[]) =>
+  gs.reduce((n, g) => n + (['Soiled', 'In Use', 'Loaded', 'New'].includes(g.status) ? 1 : 0) - (g.availability === 'ToRetire' ? 1 : 0) + (g.delivery ? 1 : 0), 0)
+
 /** distinct values of a field, most frequent first */
 export const distinct = (gs: Garment[], k: 'status' | 'availability') => {
   const c = new Map<string, number>()

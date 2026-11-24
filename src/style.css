@@ -78,9 +78,13 @@ input::placeholder { color: var(--muted); opacity: .8; }
 .drop.over, .drop:hover { border-color: var(--accent); background: var(--accent-soft); }
 
 /* summary + toolbar */
-.sum { margin: 20px 0 12px; color: var(--muted); font-size: .9rem; }
-.sum b { color: var(--ink); font-variant-numeric: tabular-nums; font-size: 1.05rem; }
-.bar { display: flex; gap: 10px; margin-bottom: 14px; }
+.cards { display: flex; flex-wrap: wrap; gap: 10px; }
+.card { display: flex; flex-direction: column; min-width: 92px; padding: 6px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.card b { font-size: 1.15rem; line-height: 1.2; font-variant-numeric: tabular-nums; color: var(--ink); }
+.card span { font-size: .75rem; color: var(--muted); }
+.card.pend { background: var(--warn-soft); border-color: transparent; }
+.card.pend b, .card.pend span { color: var(--warn-ink); }
+.bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 20px 0 14px; }
 .search-wrap { position: relative; display: block; flex: 1; max-width: 380px; }
 .search-wrap .icon { position: absolute; left: 12px; top: 50%; translate: 0 -50%; color: var(--muted); pointer-events: none; }
 .search { width: 100%; padding-left: 36px; }

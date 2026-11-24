@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react'
 import type { User } from './auth.ts'
 import { Icon, TopBar } from './ui.tsx'
-import { distinct, groupByModel, isDeliveryFile, mergeDelivery, parseDelivery, parseGarments, type Delivery, type Garment, type Row } from './parse.ts'
+import { distinct, groupByModel, isDeliveryFile, mergeDelivery, parseDelivery, parseGarments, total, type Delivery, type Garment, type Row } from './parse.ts'
 
-// availability values not shown as columns (still counted in Total)
-const HIDDEN = new Set(['Change type of allowance', 'ToRepair', 'Unavailable'])
+// availability values not shown as columns
+const HIDDEN = new Set(['Available', 'Change type of allowance', 'ToRepair', 'Unavailable'])
 const fmt = (d: Date | null) => (d ? d.toLocaleDateString('pt-PT', { timeZone: 'UTC' }) : '')
 
 export default function App({ user, onLogout, onUsers }: { user: User; onLogout: () => void; onUsers?: () => void }) {
@@ -44,7 +44,7 @@ export default function App({ user, onLogout, onUsers }: { user: User; onLogout:
     const needle = q.trim().toLowerCase()
     const all = groupByModel(gs)
     return {
-      total: gs.length, nModels: all.length, unmatched,
+      total: total(gs), nModels: all.length, unmatched,
       pending: gs.filter(g => g.delivery).length,
       models: all.filter(m => !needle || (m.code + ' ' + m.description).toLowerCase().includes(needle)),
       statuses: distinct(gs, 'status'), avails: distinct(gs, 'availability').filter(v => !HIDDEN.has(v)),
@@ -58,7 +58,7 @@ export default function App({ user, onLogout, onUsers }: { user: User; onLogout:
     if (!view) return
     const XLSX = await import('xlsx')
     const porModelo = view.models.map(m => ({
-      Modelo: m.code, Descrição: m.description, Total: m.items.length,
+      Modelo: m.code, Descrição: m.description, Total: total(m.items),
       ...(deliveries && { 'Por entregar': m.items.filter(g => g.delivery).length }),
       ...Object.fromEntries(view.statuses.map(v => [v, count(m.items, 'status', v)])),
       ...Object.fromEntries(view.avails.map(v => [v, count(m.items, 'availability', v)])),
@@ -101,17 +101,18 @@ export default function App({ user, onLogout, onUsers }: { user: User; onLogout:
 
       {view && (
         <>
-          <p className="sum">
-            <b>{view.total.toLocaleString('pt-PT')}</b> peças · <b>{view.nModels}</b> modelos
-            {deliveries && <> · <b>{view.pending.toLocaleString('pt-PT')}</b> por entregar</>}
-            {view.unmatched > 0 && <span className="err"> · {view.unmatched} chips por entregar não existem no Garments</span>}
-          </p>
           <div className="bar">
             <label className="search-wrap"><Icon name="search" />
               <input className="search" type="search" placeholder="Filtrar modelo (código ou descrição)" aria-label="Filtrar modelo" value={q} onChange={e => setQ(e.target.value)} />
             </label>
             <button onClick={exportXlsx} disabled={!view.models.length}><Icon name="download" />Exportar Excel</button>
+            <div className="cards">
+              <div className="card"><b>{view.total.toLocaleString('pt-PT')}</b><span>Peças</span></div>
+              <div className="card"><b>{view.nModels.toLocaleString('pt-PT')}</b><span>Modelos</span></div>
+              {deliveries && <div className="card pend"><b>{view.pending.toLocaleString('pt-PT')}</b><span>Por entregar</span></div>}
+            </div>
           </div>
+          {view.unmatched > 0 && <p className="err">{view.unmatched} chips por entregar não existem no Garments</p>}
           <div className="tablewrap">
           <table>
             <thead>
@@ -125,7 +126,7 @@ export default function App({ user, onLogout, onUsers }: { user: User; onLogout:
             {view.models.map(m => (
               <tbody key={m.code}>
                 <tr className="model" onClick={() => setOpen(open === m.code ? null : m.code)}>
-                  <td className="code"><span className={'chev' + (open === m.code ? ' open' : '')}><Icon name="chevron" /></span>{m.code}</td><td>{m.description}</td><td className="n"><b>{m.items.length}</b></td>
+                  <td className="code"><span className={'chev' + (open === m.code ? ' open' : '')}><Icon name="chevron" /></span>{m.code}</td><td>{m.description}</td><td className="n"><b>{total(m.items)}</b></td>
                   {deliveries && <td className="n pend">{m.items.filter(g => g.delivery).length || '–'}</td>}
                   {view.statuses.map(v => <td key={v} className="n">{count(m.items, 'status', v) || '–'}</td>)}
                   {view.avails.map(v => <td key={v} className="n alt">{count(m.items, 'availability', v) || '–'}</td>)}
